@@ -102,7 +102,7 @@ Keeping traversal in one walker avoids repeated walking code, but introduces an 
 
 ## 8. UML notation
 
-The diagram on the next page shows both interfaces, the shared abstract node, both concrete elements, the walker and all three operation visitors. `Main`, tests and standard library types are omitted. Member signatures and typed fields show dependencies/references that do not need duplicate arrows.
+The diagram on the next page shows both interfaces, the shared abstract node, both concrete elements, the walker and all three operation visitors. Every drawn relationship is labeled: `implements`, `extends`, `contains children`, `uses operation` or `uses in accept()`. Notes below the diagram show the dispatch calls. `Main`, tests and standard library types are omitted. Member signatures and typed fields show additional references.
 
 A dashed line with a hollow triangle means interface realization; a solid line with a hollow triangle means class inheritance. Both triangles point to the parent type. `AbstractNode` realizes `Element`; the two nodes inherit that interface through the base class. A dashed open arrow from `Element` to `Visitor` shows its `accept` parameter dependency. Solid open arrows show navigable associations. [2]
 

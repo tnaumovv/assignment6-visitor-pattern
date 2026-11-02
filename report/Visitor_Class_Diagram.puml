@@ -76,22 +76,24 @@ class StatisticsVisitor {
   +getDirectoryCount(): int
   +getMaxDepth(): int
 }
-AbstractNode ..|> Element
-FileNode --|> AbstractNode
-DirectoryNode --|> AbstractNode
-DirectoryNode "0..1 parent" <--> "0..* children" AbstractNode
-Element ..> Visitor : accept parameter
-TreeWalker ..|> Visitor
-TotalSizeVisitor ..|> Visitor
-SearchVisitor ..|> Visitor
-StatisticsVisitor ..|> Visitor
-TreeWalker "0..*" --> "0..1 operation" Visitor
+AbstractNode ..|> Element : implements
+FileNode --|> AbstractNode : extends
+DirectoryNode --|> AbstractNode : extends
+DirectoryNode "0..1 parent" <--> "0..* children" AbstractNode : contains children
+Element ..> Visitor : uses in accept()
+TreeWalker ..|> Visitor : implements
+TotalSizeVisitor ..|> Visitor : implements Visitor
+SearchVisitor ..|> Visitor : implements Visitor
+StatisticsVisitor ..|> Visitor : implements Visitor
+TreeWalker "0..*" --> "0..1 operation" Visitor : uses operation
 note bottom of AbstractNode
   parent/children fields and association show the same references.
   Other stored references are shown as typed fields.
 end note
 note bottom of Visitor
-  Concrete elements call visitor.visit(this).
+  FileNode.accept(v) calls v.visit(file).
+  DirectoryNode.accept(v) calls v.visit(directory).
+  TreeWalker forwards each visit to its selected operation.
   TreeWalker alone owns traversal and resets the operation.
   Main, tests, standard library classes and inherited members are omitted.
 end note

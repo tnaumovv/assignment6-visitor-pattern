@@ -36,10 +36,3 @@ runs; they do not traverse children themselves. A search path excludes the selec
 directory root's name; a root file uses its own name. Root depth is zero. Search
 results are sorted lexicographically and use `/`. Children and result lists cannot
 be edited through getters. Do not change the tree during a walk.
-
-Tests: `TreeIntegrityTest`, `VisitorTest`, `StatisticsVisitorTest`.
-
-[PDF report](report/Assignment6_Visitor_Report.pdf) ·
-[Report text](report.md) ·
-[UML](report/Visitor_Class_Diagram.svg) ·
-[Editable PlantUML](report/Visitor_Class_Diagram.puml)

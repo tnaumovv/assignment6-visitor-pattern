@@ -91,9 +91,6 @@ note bottom of AbstractNode
   Other stored references are shown as typed fields.
 end note
 note bottom of Visitor
-  FileNode.accept(v) calls v.visit(file).
-  DirectoryNode.accept(v) calls v.visit(directory).
-  TreeWalker forwards each visit to its selected operation.
   TreeWalker alone owns traversal and resets the operation.
   Main, tests, standard library classes and inherited members are omitted.
 end note

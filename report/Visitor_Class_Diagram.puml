@@ -1,0 +1,98 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide circle
+
+interface Element {
+  +getName(): String
+  +accept(visitor: Visitor): void
+}
+abstract class AbstractNode {
+  -name: String
+  -parent: DirectoryNode
+  #AbstractNode(name: String)
+  +getName(): String
+  +getParent(): DirectoryNode
+  ~attachTo(parent: DirectoryNode): void
+  +pathFrom(root: AbstractNode): String
+  +depthFrom(root: AbstractNode): int
+}
+class FileNode {
+  -size: long
+  +FileNode(name: String, size: long)
+  +getSize(): long
+  +accept(visitor: Visitor): void
+}
+class DirectoryNode {
+  -children: List<AbstractNode>
+  +DirectoryNode(name: String)
+  +add(child: AbstractNode): void
+  +getChildren(): List<AbstractNode>
+  +accept(visitor: Visitor): void
+}
+interface Visitor {
+  +reset(root: AbstractNode): void
+  +visit(file: FileNode): void
+  +visit(directory: DirectoryNode): void
+}
+class TreeWalker {
+  -pending: Deque<AbstractNode>
+  -operation: Visitor
+  +walk(root: AbstractNode, visitor: Visitor): void
+  +reset(root: AbstractNode): void
+  +visit(file: FileNode): void
+  +visit(directory: DirectoryNode): void
+}
+class TotalSizeVisitor {
+  -totalSize: long
+  +reset(root: AbstractNode): void
+  +visit(file: FileNode): void
+  +visit(directory: DirectoryNode): void
+  +getTotalSize(): long
+}
+class SearchVisitor {
+  -filenameCriterion: Predicate<String>
+  -minimumSize: long
+  -matches: List<String>
+  -root: AbstractNode
+  +SearchVisitor(filenameCriterion: Predicate<String>, minimumSize: long)
+  +reset(root: AbstractNode): void
+  +visit(file: FileNode): void
+  +visit(directory: DirectoryNode): void
+  +getMatches(): List<String>
+}
+class StatisticsVisitor {
+  -root: AbstractNode
+  -fileCount: int
+  -directoryCount: int
+  -maxDepth: int
+  +reset(root: AbstractNode): void
+  +visit(file: FileNode): void
+  +visit(directory: DirectoryNode): void
+  -updateDepth(node: AbstractNode): void
+  +getFileCount(): int
+  +getDirectoryCount(): int
+  +getMaxDepth(): int
+}
+AbstractNode ..|> Element
+FileNode --|> AbstractNode
+DirectoryNode --|> AbstractNode
+DirectoryNode "0..1 parent" <--> "0..* children" AbstractNode
+Element ..> Visitor : accept parameter
+TreeWalker ..|> Visitor
+TotalSizeVisitor ..|> Visitor
+SearchVisitor ..|> Visitor
+StatisticsVisitor ..|> Visitor
+TreeWalker "0..*" --> "0..1 operation" Visitor
+note bottom of AbstractNode
+  parent/children fields and association show the same references.
+  Other stored references are shown as typed fields.
+end note
+note bottom of Visitor
+  Concrete elements call visitor.visit(this).
+  TreeWalker alone owns traversal and resets the operation.
+  Main, tests, standard library classes and inherited members are omitted.
+end note
+@enduml
